@@ -38,6 +38,9 @@
       "ecmaVersion": 2020,
       "sourceType": "module",
       "project": "./tsconfig.json",
+      "extraFileExtensions": [
+        ".mjs"
+      ],
       "ecmaFeatures": {
         "jsx": true
       }
