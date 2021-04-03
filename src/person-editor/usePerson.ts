@@ -11,10 +11,24 @@ function savePerson(person: Person | null): void {
   localforage.setItem("person", person);
 }
 
-export function usePerson(
-  initialPerson: Person
-): [Person | null, (person: Person | null) => void] {
-  const [person, setPerson] = useState<Person | null>(null);
+interface FormState {
+  isDirty: boolean;
+  isValid: boolean;
+}
+
+type UsePersonReturnType = [
+  Person | null,
+  (person: Person | null) => void,
+  FormState
+];
+
+export function usePerson(initialPerson: Person): UsePersonReturnType {
+  const [person, setPersonState] = useState<Person | null>(null);
+  const [formState, setFormState] = useState({
+    isDirty: false,
+    isValid: true,
+  });
+
   const loaded = useRef(false);
 
   useLayoutEffect(() => {
@@ -30,7 +44,7 @@ export function usePerson(
       // await sleep(2500);
       const person = await localforage.getItem<Person>("person");
       if (loaded.current) {
-        setPerson(person ?? initialPerson);
+        setPersonState(person ?? initialPerson);
       }
     };
     getPerson();
@@ -44,5 +58,10 @@ export function usePerson(
     savePerson(person);
   });
 
-  return [person, setPerson];
+  const setPerson = (person: React.SetStateAction<Person | null>) => {
+    setPersonState(person);
+    setFormState((s) => ({ ...s, isDirty: true }));
+  };
+
+  return [person, setPerson, formState];
 }

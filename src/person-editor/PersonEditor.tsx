@@ -8,7 +8,7 @@ import { initialPerson } from "../utils";
 import { usePerson } from "./usePerson";
 
 export function PersonEditor(): ReactElement {
-  const [person, setPerson] = usePerson(initialPerson);
+  const [person, setPerson, { isDirty }] = usePerson(initialPerson);
 
   if (!person) {
     return <Loading />;
@@ -58,7 +58,9 @@ export function PersonEditor(): ReactElement {
           setPerson({ ...person, phone: e.target.value });
         }}
       />
-      <button className="btn btn-primary">Save</button>
+      <button className="btn btn-primary" disabled={!isDirty}>
+        Save
+      </button>
       <hr />
       <pre>{JSON.stringify(person, null, 2)}</pre>
     </form>
