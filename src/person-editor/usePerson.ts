@@ -2,6 +2,7 @@ import localforage from "localforage";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Person } from "../types/person";
 import { sleep } from "../utils";
+import { useDebounce } from "./useDebounce";
 
 function savePerson(person: Person | null): void {
   console.log("Saving", person);
@@ -25,7 +26,7 @@ export function usePerson(
 
   useEffect(() => {
     const getPerson = async () => {
-      await sleep(2500);
+      // await sleep(2500);
       const person = await localforage.getItem<Person>("person");
       if (loaded.current) {
         setPerson(person ?? initialPerson);
@@ -34,9 +35,9 @@ export function usePerson(
     getPerson();
   }, [initialPerson]);
 
-  useEffect(() => {
+  useDebounce(() => {
     savePerson(person);
-  }, [person]);
+  }, 1000);
 
   return [person, setPerson];
 }
