@@ -1,5 +1,5 @@
 import localforage from "localforage";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Person } from "../types/person";
 import { sleep } from "../utils";
 
@@ -9,19 +9,17 @@ function savePerson(person: Person | null): void {
   localforage.setItem("person", person);
 }
 
-// Note: This is wrong as this value is shared between all instances
-let loaded = false;
-
 export function usePerson(
   initialPerson: Person
 ): [Person | null, (person: Person | null) => void] {
   const [person, setPerson] = useState<Person | null>(null);
+  const loaded = useRef(false);
 
   useLayoutEffect(() => {
-    loaded = true;
+    loaded.current = true;
 
     return () => {
-      loaded = false;
+      loaded.current = false;
     };
   });
 
@@ -29,7 +27,7 @@ export function usePerson(
     const getPerson = async () => {
       await sleep(2500);
       const person = await localforage.getItem<Person>("person");
-      if (loaded) {
+      if (loaded.current) {
         setPerson(person ?? initialPerson);
       }
     };
