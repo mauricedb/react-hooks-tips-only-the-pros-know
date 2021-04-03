@@ -1,45 +1,45 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
+import React, { ReactElement } from "react";
+import {
+  BrowserRouter,
+  Link,
+  NavLink,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
+import { Navbar, Nav } from "react-bootstrap";
+
 import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0);
+import { PersonEditor } from "./person-editor";
 
+export function App(): ReactElement {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div className="container">
+      <BrowserRouter>
+        <Navbar bg="dark" variant="dark">
+          <Navbar.Brand as={Link} to="/">
+            React Hooks for pros
+          </Navbar.Brand>
+          <Nav className="mr-auto">
+            <Nav.Link as={NavLink} to="/person-editor">
+              Person Editor
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/kimrof">
+              Kimrof
+            </Nav.Link>
+          </Nav>
+        </Navbar>
+        <Switch>
+          <Route path="/person-editor">
+            <PersonEditor />
+          </Route>
+          <Route path="/kimrof">kimrof</Route>
+          <Route>
+            <Redirect to="/" />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 }
-
-export default App;
