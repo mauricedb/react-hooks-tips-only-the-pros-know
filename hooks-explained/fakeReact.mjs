@@ -1,14 +1,19 @@
 let rerender = false;
 
+/**
+ *
+ * Public API
+ *
+ */
 export function useState(initialState) {
-  const hookState = findStateForThisHookInCurrentComponent(initialState);
+  const hook = mountWorkInProgressHook(initialState);
 
   function setState(value) {
-    hookState.memoizedState = value;
+    hook.memoizedState = value;
     rerender = true;
   }
 
-  return [hookState.memoizedState, setState];
+  return [hook.memoizedState, setState];
 }
 
 export function render(component) {
@@ -23,56 +28,54 @@ export function render(component) {
 
 /**
  *
- * Internals
+ * Internal functions
  *
  */
 
-const globalComponentState = new WeakMap();
-let stateForCurrentComponent = null;
+const workInProgressForComponents = new WeakMap();
+let currentlyRenderingFiber = null;
 
-function findStateForThisHookInCurrentComponent(initialState) {
+function mountWorkInProgressHook(initialState) {
   try {
-    const hookState =
-      stateForCurrentComponent.hooksStates[stateForCurrentComponent.hooksIndex];
-    if (hookState) {
-      return hookState;
+    const hook =
+      currentlyRenderingFiber.hooksStates[currentlyRenderingFiber.hooksIndex];
+    if (hook) {
+      return hook;
     } else {
-      const newHookState = { memoizedState: initialState };
-      stateForCurrentComponent.hooksStates[
-        stateForCurrentComponent.hooksIndex
-      ] = newHookState;
-      return newHookState;
+      const newHook = { memoizedState: initialState };
+      currentlyRenderingFiber.hooksStates[
+        currentlyRenderingFiber.hooksIndex
+      ] = newHook;
+      return newHook;
     }
   } finally {
-    stateForCurrentComponent.hooksIndex++;
+    currentlyRenderingFiber.hooksIndex++;
   }
 }
 
-function findStateComponentForComponentToRender(component) {
-  const existingComponentState = globalComponentState.get(component);
+function findWorkInProgress(component) {
+  const existingComponentState = workInProgressForComponents.get(component);
   if (existingComponentState) {
     existingComponentState.hooksIndex = 0;
     return existingComponentState;
   } else {
     const newComponentState = { hooksStates: [], hooksIndex: 0 };
-    globalComponentState.set(component, newComponentState);
+    workInProgressForComponents.set(component, newComponentState);
     return newComponentState;
   }
 }
 
-function renderComponentWithState(component) {
+function renderWithHooks(component) {
   try {
-    stateForCurrentComponent = findStateComponentForComponentToRender(
-      component
-    );
+    currentlyRenderingFiber = findWorkInProgress(component);
     const children = component();
     return children;
   } finally {
-    stateForCurrentComponent = null;
+    currentlyRenderingFiber = null;
   }
 }
 
 function renderComponent(component) {
-  const children = renderComponentWithState(component);
+  const children = renderWithHooks(component);
   children.forEach((child) => renderComponent(child));
 }
