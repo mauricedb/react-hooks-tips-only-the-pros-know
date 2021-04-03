@@ -1,4 +1,5 @@
 import React, { ReactElement } from "react";
+import { Navbar, Nav } from "react-bootstrap";
 import {
   BrowserRouter,
   Link,
@@ -7,11 +8,11 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import { Navbar, Nav } from "react-bootstrap";
 
 import "./App.css";
 
 import { PersonEditor } from "./person-editor";
+import { KimrofPersonEditor } from "./kimrof-person-editor";
 
 export function App(): ReactElement {
   return (
@@ -25,8 +26,11 @@ export function App(): ReactElement {
             <Nav.Link as={NavLink} to="/person-editor">
               Person Editor
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/kimrof">
+            <Nav.Link as={NavLink} to="/kimrof-person-editor">
               Kimrof
+            </Nav.Link>
+            <Nav.Link href="https://formik.org/docs/api/formik" target="formik">
+              Formik
             </Nav.Link>
           </Nav>
         </Navbar>
@@ -34,7 +38,9 @@ export function App(): ReactElement {
           <Route path="/person-editor">
             <PersonEditor />
           </Route>
-          <Route path="/kimrof">kimrof</Route>
+          <Route path="/kimrof-person-editor">
+            <KimrofPersonEditor />
+          </Route>
           <Route>
             <Redirect to="/" />
           </Route>

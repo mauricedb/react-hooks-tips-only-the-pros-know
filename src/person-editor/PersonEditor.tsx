@@ -6,11 +6,11 @@ import type { Person } from "../types/person";
 import { LabeledInput, Loading } from "../components";
 import { initialPerson } from "../utils";
 
-const savePerson = (person: Person | null): void => {
+function savePerson(person: Person | null): void {
   console.log("Saving", person);
 
   localforage.setItem("person", person);
-};
+}
 
 export function PersonEditor(): ReactElement {
   const [person, setPerson] = useState<Person | null>(null);

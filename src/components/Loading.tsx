@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import classes from "./Loading.module.css";
 
-export const Loading: React.FC = () => {
+export function Loading(): ReactElement {
   return <div className={classes.loading} />;
-};
+}
