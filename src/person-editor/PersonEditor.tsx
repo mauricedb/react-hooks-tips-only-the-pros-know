@@ -5,27 +5,10 @@ import type { Person } from "../types/person";
 
 import { LabeledInput, Loading } from "../components";
 import { initialPerson } from "../utils";
-
-function savePerson(person: Person | null): void {
-  console.log("Saving", person);
-
-  localforage.setItem("person", person);
-}
+import { usePerson } from "./usePerson";
 
 export function PersonEditor(): ReactElement {
-  const [person, setPerson] = useState<Person | null>(null);
-
-  useEffect(() => {
-    const getPerson = async () => {
-      const person = await localforage.getItem<Person>("person");
-      setPerson(person ?? initialPerson);
-    };
-    getPerson();
-  }, []);
-
-  useEffect(() => {
-    savePerson(person);
-  }, [person]);
+  const [person, setPerson] = usePerson(initialPerson);
 
   if (!person) {
     return <Loading />;
