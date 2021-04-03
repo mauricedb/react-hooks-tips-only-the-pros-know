@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Person } from "../types/person";
 import { sleep } from "../utils";
 import { useDebounce } from "./useDebounce";
+import { useWillUnmount } from "./useWillUnmount";
 
 function savePerson(person: Person | null): void {
   console.log("Saving", person);
@@ -38,6 +39,10 @@ export function usePerson(
   useDebounce(() => {
     savePerson(person);
   }, 1000);
+
+  useWillUnmount(() => {
+    savePerson(person);
+  });
 
   return [person, setPerson];
 }
