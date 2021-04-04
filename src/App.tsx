@@ -13,6 +13,7 @@ import "./App.css";
 
 import { PersonEditor } from "./person-editor";
 import { KimrofPersonEditor } from "./kimrof-person-editor";
+import { Counter } from "./rules-of-hooks";
 
 export function App(): ReactElement {
   return (
@@ -26,6 +27,9 @@ export function App(): ReactElement {
             <Nav.Link as={NavLink} to="/person-editor">
               Person Editor
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/counter">
+              Rules of Hooks
+            </Nav.Link>
             <Nav.Link as={NavLink} to="/kimrof-person-editor">
               Kimrof
             </Nav.Link>
@@ -37,6 +41,9 @@ export function App(): ReactElement {
         <Switch>
           <Route path="/person-editor">
             <PersonEditor />
+          </Route>
+          <Route path="/counter">
+            <Counter />
           </Route>
           <Route path="/kimrof-person-editor">
             <KimrofPersonEditor />
