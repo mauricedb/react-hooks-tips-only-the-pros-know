@@ -1,7 +1,14 @@
 import localforage from "localforage";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { Person } from "../types/person";
 import { sleep } from "../utils";
+import { FormState, personEditorReducer } from "./personEditorReducer";
 import { useDebounce } from "./useDebounce";
 import { useWillUnmount } from "./useWillUnmount";
 
@@ -11,22 +18,16 @@ function savePerson(person: Person | null): void {
   localforage.setItem("person", person);
 }
 
-interface FormState {
-  isDirty: boolean;
-  isValid: boolean;
-}
-
 type UsePersonReturnType = [
   Person | null,
-  (person: Person | null) => void,
+  (name: keyof Person, value: unknown) => void,
   FormState
 ];
 
 export function usePerson(initialPerson: Person): UsePersonReturnType {
-  const [person, setPersonState] = useState<Person | null>(null);
-  const [formState, setFormState] = useState({
-    isDirty: false,
-    isValid: true,
+  const [state, dispatch] = useReducer(personEditorReducer, {
+    person: null,
+    formState: { isDirty: false, isValid: true },
   });
 
   const loaded = useRef(false);
@@ -44,24 +45,26 @@ export function usePerson(initialPerson: Person): UsePersonReturnType {
       // await sleep(2500);
       const person = await localforage.getItem<Person>("person");
       if (loaded.current) {
-        setPersonState(person ?? initialPerson);
+        dispatch({
+          type: "set-initial-person",
+          payload: person ?? initialPerson,
+        });
       }
     };
     getPerson();
   }, [initialPerson]);
 
   useDebounce(() => {
-    savePerson(person);
+    savePerson(state.person);
   }, 1000);
 
   useWillUnmount(() => {
-    savePerson(person);
+    savePerson(state.person);
   });
 
-  const setPerson = (person: React.SetStateAction<Person | null>) => {
-    setPersonState(person);
-    setFormState((s) => ({ ...s, isDirty: true }));
+  const setProperty = (name: keyof Person, value: unknown) => {
+    dispatch({ type: "set-property", payload: { name, value } });
   };
 
-  return [person, setPerson, formState];
+  return [state.person, setProperty, state.formState];
 }
