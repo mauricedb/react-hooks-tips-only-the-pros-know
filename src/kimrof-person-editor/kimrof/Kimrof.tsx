@@ -30,6 +30,9 @@ export function Kimrof<TData extends KimrofObject>({
     () => ({
       isDirty,
       values,
+      setFieldValue: (name: string, value: KimrofProperty) => {
+        dispatch({ type: "set-property", payload: { name, value } });
+      },
     }),
     [isDirty, values]
   );
