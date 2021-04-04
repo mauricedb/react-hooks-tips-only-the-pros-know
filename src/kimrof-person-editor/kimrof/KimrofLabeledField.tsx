@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 
 import { LabeledInput } from "../../components";
+import { useKimrofField } from "./useKimrofField";
 
 interface Props
   extends Omit<
@@ -11,5 +12,7 @@ interface Props
 }
 
 export function KimrofLabeledField(props: Props): ReactElement {
-  return <LabeledInput {...props} />;
+  const fieldProps = useKimrofField(props.name);
+
+  return <LabeledInput {...props} {...fieldProps} />;
 }
