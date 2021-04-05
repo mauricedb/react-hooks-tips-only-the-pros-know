@@ -9,11 +9,13 @@ import { kimrofReducer } from "./kimrofReducer";
 interface Props<TData> {
   children: ReactNode;
   initialValues: TData;
+  onSubmit: (values: TData) => void;
 }
 
 export function Kimrof<TData extends KimrofObject>({
   children,
   initialValues,
+  onSubmit,
 }: Props<TData>): ReactElement {
   const [
     {
@@ -30,11 +32,15 @@ export function Kimrof<TData extends KimrofObject>({
     () => ({
       isDirty,
       values,
+      onSubmit: (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(values as TData);
+      },
       setFieldValue: (name: string, value: KimrofProperty) => {
         dispatch({ type: "set-property", payload: { name, value } });
       },
     }),
-    [isDirty, values]
+    [isDirty, onSubmit, values]
   );
 
   return (

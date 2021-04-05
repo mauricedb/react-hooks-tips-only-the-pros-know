@@ -1,12 +1,12 @@
 import React, { ReactElement } from "react";
-import { KimrofLabeledField } from "./kimrof";
+import { KimrofLabeledField, useKimrof, useKimrofForm } from "./kimrof";
 
 export function PersonEditor(): ReactElement {
-  const values = "To be determined";
-  const isDirty = false;
+  const { values, isDirty } = useKimrof();
+  const formProps = useKimrofForm();
 
   return (
-    <form className="person-editor">
+    <form className="person-editor" {...formProps}>
       <h2>Kimrof Person Editor</h2>
       <KimrofLabeledField label="Firstname:" name="firstname" />
       <KimrofLabeledField label="Surname:" name="surname" />
