@@ -1,13 +1,6 @@
 import React, { ReactElement } from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import {
-  BrowserRouter,
-  Link,
-  NavLink,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter, Link, NavLink, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 
@@ -38,20 +31,14 @@ export function App(): ReactElement {
             </Nav.Link>
           </Nav>
         </Navbar>
-        <Switch>
-          <Route path="/person-editor">
-            <PersonEditor />
-          </Route>
-          <Route path="/counter">
-            <Counter />
-          </Route>
-          <Route path="/kimrof-person-editor">
-            <KimrofPersonEditor />
-          </Route>
-          <Route>
-            <Redirect to="/" />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/person-editor" element={<PersonEditor />}></Route>
+          <Route path="/counter" element={<Counter />}></Route>
+          <Route
+            path="/kimrof-person-editor"
+            element={<KimrofPersonEditor />}
+          ></Route>
+        </Routes>
       </BrowserRouter>
     </div>
   );
